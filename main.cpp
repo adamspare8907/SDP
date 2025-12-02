@@ -55,7 +55,7 @@ void Create (){
                 Instructions();
             }
             else if (x <= 252 && x >= 209 && y <= 227 && y >=214){
-                Credits();
+                Exit();
             }
             else{
 
@@ -188,7 +188,9 @@ void Instructions(){
 
 }
 
-void Exit(){}
+void Exit(){
+	abort();
+}
 
 int main() {
     // Clear background
