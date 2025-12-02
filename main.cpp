@@ -8,7 +8,6 @@
 //Instructions:    TL: (159,214)      BR: (202,227)
 //Exit:            TL: (209,214)      BR: (252,227)
 
-void GravityTraining();
 void Create();
 void Start(); //HHH
 void Credits(); //HHH
