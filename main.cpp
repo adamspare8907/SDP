@@ -12,8 +12,8 @@ void Instructions(); //HHH
 void Exit(); //HHH
 void User_Info();
 void Generate();
-void Fall(int x, FEHImage icon, char* File);
-void Drag();
+void Fall(int x, int y, FEHImage icon, char* File, int xRange, int yRange);
+void Drag(FEHImage Icon, char *File, int xRange, int yRange);
 void Score();
 void Check_End();
 void Results();
@@ -209,35 +209,56 @@ void Generate(){
         //Generate recycling
         bottle.Draw(randomCoordinate, 0);
         strcpy(File_name, "Bottle.png");
-        Fall(randomCoordinate, bottle, File_name);
+        Fall(randomCoordinate, 0, bottle, File_name, 10, 30);
     }
     else if (randomType % 3 == 1){
         //Generate trash
         trash.Draw(randomCoordinate, 0);
         strcpy(File_name, "Trash.png");
-        Fall(randomCoordinate, trash, File_name);
+        Fall(randomCoordinate, 0, trash, File_name, 19, 23);
     }
-    else if (randomType % 3 == 2){
+    else if (randomType % 3 == 2){//xRange = 16
         //Generate Compost
         banana.Draw(randomCoordinate, 0);
         strcpy(File_name, "Banana.png");
-        Fall(randomCoordinate, banana, File_name);
+        Fall(randomCoordinate, 0, banana, File_name, 16, 16);
     }
 }
 
-void Fall(int x, FEHImage Icon, char *File){
-    int y = 0;
+void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
+    int xInput, yInput;
     Icon.Open(File);
-    while(y <= 220){
+
+    float time;
+
+    while(y < 220){
+        time = TimeNow();
+
+        while(TimeNow() - time < 0.1){
+            if (LCD.Touch(&xInput, &yInput)){
+                if ((xInput >= x && xInput <= x + xRange) && (yInput >= y && yInput <= y + yRange)){
+                    Drag(Icon, File, xRange, yRange);
+                }
+            }
+            else{}
+        }
         Background();
         y+=1;
         Icon.Draw(x, y);
-        Sleep(.1);
     }
 }
 
-void Drag(){
+void Drag(FEHImage Icon, char *File, int xRange, int yRange){
+    int x, y;
+    Icon.Open(File);
 
+    while(LCD.Touch(&x, &y)){
+        Background();
+        Icon.Draw(x,y);
+    }
+    if(!LCD.Touch(&x, &y)){
+        Fall(x, y, Icon, File, xRange, yRange);
+    }
 }
 
 void Score(){
