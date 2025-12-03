@@ -14,7 +14,7 @@ void User_Info();
 void Generate();
 void Fall(int x, int y, FEHImage icon, char* File, int xRange, int yRange);
 void Drag(FEHImage Icon, char *File, int xRange, int yRange);
-void Score();
+void Score(int x);
 void Check_End();
 void Results();
 
@@ -73,8 +73,11 @@ void Create (){
 }
 
 void Background(){
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
+    FEHImage Background, Bins;
+    Background.Open("Background.png");
+    Bins.Open("Bins.png");
+    Background.Draw(0,0);
+    Bins.Draw(0,213);
 }
 
 void Start(){
@@ -229,9 +232,12 @@ void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
     int xInput, yInput;
     Icon.Open(File);
 
+    FEHImage Bins;
+    Bins.Open("Bins.png");
+
     float time;
 
-    while(y < 220){
+    while(y < 213){
         time = TimeNow();
 
         while(TimeNow() - time < 0.1){
@@ -245,24 +251,36 @@ void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
         Background();
         y+=1;
         Icon.Draw(x, y);
+        Bins.Draw(0,213);
+    }
+    if(y>213){
+        Score(x);
     }
 }
 
 void Drag(FEHImage Icon, char *File, int xRange, int yRange){
     int x, y;
+    FEHImage Bins;
+    Bins.Open("Bins.png");
     Icon.Open(File);
 
-    while(LCD.Touch(&x, &y)){
-        Background();
-        Icon.Draw(x,y);
+    while(y < 213){
+        while(LCD.Touch(&x, &y)){
+            Background();
+            Icon.Draw(x,y);
+            Bins.Draw(0,213);
+        }
+        if(!LCD.Touch(&x, &y)){
+            Fall(x, y, Icon, File, xRange, yRange);
+        }
     }
-    if(!LCD.Touch(&x, &y)){
-        Fall(x, y, Icon, File, xRange, yRange);
+    if(y>213){
+        Score(x);
     }
 }
 
-void Score(){
-
+void Score(int x){
+    abort();
 }
 
 void Check_End(){
@@ -274,9 +292,6 @@ void Results(){
 }
 
 int main() {
-    
-
-
     // Clear background
     LCD.SetBackgroundColor(BLACK);
     LCD.Clear();
