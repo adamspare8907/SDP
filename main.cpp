@@ -1,12 +1,7 @@
 #include "FEHLCD.h"
 #include "FEHUtility.h"
 #include "FEHImages.h"
-
-//Play Now:        TL: (112,187)      BR: (200,204)
-//Credits:         TL: (59,214)       BR: (102,227)
-//Stats:           TL: (110,214)      BR: (151, 227)
-//Instructions:    TL: (159,214)      BR: (202,227)
-//Exit:            TL: (209,214)      BR: (252,227)
+#include "FEHRandom.h"
 
 void Create();
 void Start(); //HHH
@@ -14,6 +9,13 @@ void Credits(); //HHH
 void Stats(); //HHH
 void Instructions(); //HHH
 void Exit(); //HHH
+void User_Info();
+void Generate();
+void Fall();
+void Drag();
+void Score();
+void Check_End();
+void Results();
 
 /*
     SDP Training Minigame #2
@@ -30,7 +32,7 @@ void Create (){
 
     //Create Start Page Art
     FEHImage Start_Screen;
-    Start_Screen.Open("Start.png");
+    Start_Screen.Open("Create.png");
     Start_Screen.Draw(0, 0);
     
     //Scan for input
@@ -41,6 +43,12 @@ void Create (){
 
         while (LCD.Touch(&x,&y)) {
             // TODO: Screen is not being touched
+            
+            //Play Now:        TL: (112,187)      BR: (200,204)
+            //Credits:         TL: (59,214)       BR: (102,227)
+            //Stats:           TL: (110,214)      BR: (151, 227)
+            //Instructions:    TL: (159,214)      BR: (202,227)
+            //Exit:            TL: (209,214)      BR: (252,227)
             if (x <= 200 && x >= 112 && y <= 204 && y >=187){
                 Start();
             }
@@ -57,7 +65,7 @@ void Create (){
                 Exit();
             }
             else{
-
+                //If there is an input, but it's not on an icon nothing will happen
             }
 	    }
     }
@@ -77,14 +85,9 @@ void Start(){
 		// Screen not being touched
 	}
 
-        while(LCD.Touch(&x, &y)){
-            if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
-            }
-        }
+        Generate();
     }
-}
-    
+}    
 
 void Credits(){
       int x, y;
@@ -188,7 +191,59 @@ void Instructions(){
 }
 
 void Exit(){
-	abort();
+    abort();
+}
+
+void User_Info(){
+
+}
+
+void Generate(){
+    int randomNumber = Random.RandInt();
+    
+    LCD.SetBackgroundColor(BLACK);
+    LCD.Clear();
+
+    if (randomNumber % 3 == 0){
+        //Generate recycling
+        LCD.SetFontColor(GREEN);
+        LCD.DrawCircle(50,50,5);
+        LCD.FillCircle(50,50,5);
+    }
+    else if (randomNumber % 3 == 1){
+        //Generate trash
+        LCD.SetFontColor(BLUE);
+        LCD.DrawCircle(50,50,5);
+        LCD.FillCircle(50,50,5);
+    }
+    else if (randomNumber % 3 == 2){
+        //Generate Compost
+        LCD.SetFontColor(RED);
+        LCD.DrawCircle(50, 50, 5);
+        LCD.FillCircle(50,50,5);
+    }
+
+
+}
+
+void Fall(){
+
+}
+
+void Drag(){
+
+}
+
+void Score(){
+
+}
+
+void Check_End(){
+
+}
+
+void Results(){
+
 }
 
 int main() {
