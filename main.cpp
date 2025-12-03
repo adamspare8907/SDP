@@ -192,6 +192,41 @@ void Exit(){
 }
 
 void User_Info(){
+    LCD.SetBackgroundColor(BLACK);
+    LCD.Clear();
+    char ch;
+    char name[10];
+    int i=0;
+    int a=1;
+
+    LCD.WriteLine("Type name on the screen");
+    LCD.WriteLine("Press ENTER key to finish");
+
+
+    int count = 0;
+    while(a==1){
+        ch = Keyboard.lastChar();
+        if(ch != 0){ // A character was pressed
+            if(ch == 10){ // Enter key
+                a=0;
+            }
+            // Display the character
+            name[i]=ch;
+            LCD.Write(ch);
+            i++;
+            count++;
+        }
+
+        Sleep(10);
+    }
+    char actualString[count];
+    for (int i = 0; i < count; i++) {
+            actualString[i] = name[i];
+        }
+
+        LCD.Write("Your name is:");
+        LCD.Write(actualString);
+}
 
 }
 
