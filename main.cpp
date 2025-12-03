@@ -2,6 +2,7 @@
 #include "FEHUtility.h"
 #include "FEHImages.h"
 #include "FEHRandom.h"
+#include "FEHKeyboard.h"
 #include <string>
 #include <iostream>
 
