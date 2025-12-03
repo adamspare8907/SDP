@@ -4,6 +4,7 @@
 #include "FEHRandom.h"
 
 void Create();
+void Background();
 void Start(); //HHH
 void Credits(); //HHH
 void Stats(); //HHH
@@ -11,7 +12,7 @@ void Instructions(); //HHH
 void Exit(); //HHH
 void User_Info();
 void Generate();
-void Fall();
+void Fall(int x, FEHImage icon, char* File);
 void Drag();
 void Score();
 void Check_End();
@@ -71,22 +72,15 @@ void Create (){
     }
 }
 
-void Start(){
-    int x, y;
-
+void Background(){
     LCD.SetBackgroundColor(BLACK);
     LCD.Clear();
+}
 
-    LCD.SetFontColor(RED);
-    LCD.DrawRectangle(0, 0, 50, 25);
-    LCD.FillRectangle(0, 0, 50, 25);
-    while (1){
-            while (!LCD.Touch(&x,&y)) {
-		// Screen not being touched
-	}
-
-        Generate();
-    }
+void Start(){
+    //Needs updated with background
+    Background();
+    Generate();
 }    
 
 void Credits(){
@@ -199,35 +193,47 @@ void User_Info(){
 }
 
 void Generate(){
-    int randomNumber = Random.RandInt();
+    //Randomixing type of object and x-coordinate of object
+    int randomType = Random.RandInt();
+    int randomCoordinate = Random.RandInt() / 97;
+    char File_name[20];
+
+
+    FEHImage bottle, trash, banana;
+    bottle.Open("Bottle.png");
+    trash.Open("Trash.png");
+    banana.Open("Banana.png");
     
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
 
-    if (randomNumber % 3 == 0){
+    if (randomType % 3 == 0){
         //Generate recycling
-        LCD.SetFontColor(GREEN);
-        LCD.DrawCircle(50,50,5);
-        LCD.FillCircle(50,50,5);
+        bottle.Draw(randomCoordinate, 0);
+        strcpy(File_name, "Bottle.png");
+        Fall(randomCoordinate, bottle, File_name);
     }
-    else if (randomNumber % 3 == 1){
+    else if (randomType % 3 == 1){
         //Generate trash
-        LCD.SetFontColor(BLUE);
-        LCD.DrawCircle(50,50,5);
-        LCD.FillCircle(50,50,5);
+        trash.Draw(randomCoordinate, 0);
+        strcpy(File_name, "Trash.png");
+        Fall(randomCoordinate, trash, File_name);
     }
-    else if (randomNumber % 3 == 2){
+    else if (randomType % 3 == 2){
         //Generate Compost
-        LCD.SetFontColor(RED);
-        LCD.DrawCircle(50, 50, 5);
-        LCD.FillCircle(50,50,5);
+        banana.Draw(randomCoordinate, 0);
+        strcpy(File_name, "Banana.png");
+        Fall(randomCoordinate, banana, File_name);
     }
-
-
 }
 
-void Fall(){
-
+void Fall(int x, FEHImage Icon, char *File){
+    int y = 0;
+    Icon.Open(File);
+    while(y <= 220){
+        Background();
+        y+=1;
+        Icon.Draw(x, y);
+        Sleep(.1);
+    }
 }
 
 void Drag(){
@@ -247,6 +253,9 @@ void Results(){
 }
 
 int main() {
+    
+
+
     // Clear background
     LCD.SetBackgroundColor(BLACK);
     LCD.Clear();
