@@ -2,6 +2,8 @@
 #include "FEHUtility.h"
 #include "FEHImages.h"
 #include "FEHRandom.h"
+#include <string>
+#include <iostream>
 
 void Create();
 void Background();
