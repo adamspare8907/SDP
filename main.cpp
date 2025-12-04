@@ -3,8 +3,6 @@
 #include "FEHImages.h"
 #include "FEHRandom.h"
 #include "FEHKeyboard.h"
-#include <string>
-#include <iostream>
 
 void Create();
 void Background();
@@ -17,10 +15,13 @@ void User_Info();
 void Generate();
 void Fall(int x, int y, FEHImage icon, char* File, int xRange, int yRange);
 void Drag(FEHImage Icon, char *File, int xRange, int yRange);
-void Score(int x);
+void Score(int x, int y);
 void Check_End();
 void Results();
 
+int score = 0, type, incorrect;
+int randomCoordinate;
+int randomType;
 /*
     SDP Training Minigame #2
   
@@ -76,6 +77,7 @@ void Create (){
 }
 
 void Background(){
+    LCD.Clear();
     FEHImage Background, Bins;
     Background.Open("Background.png");
     Bins.Open("Bins.png");
@@ -115,15 +117,18 @@ void Credits(){
     LCD.DrawRectangle(0, 0, 50, 25);
     LCD.FillRectangle(0, 0, 50, 25);
     while (1){
-            while (!LCD.Touch(&x,&y)) {
+            while(!LCD.Touch(&x,&y)) {
 		// Screen not being touched
 	}
 
         while(LCD.Touch(&x, &y)){
             if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
+                break;
             }
         }
+        if (x>=0 && x<=50 && y >=0 && y<=25){
+                Create();
+            }
     }
 
 }
@@ -148,9 +153,12 @@ void Stats(){
 
         while(LCD.Touch(&x, &y)){
             if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
+                break;
             }
         }
+        if (x>=0 && x<=50 && y >=0 && y<=25){
+                Create();
+            }
     }
 }
 
@@ -183,9 +191,12 @@ void Instructions(){
 
         while(LCD.Touch(&x, &y)){
             if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
+                break;
             }
         }
+        if (x>=0 && x<=50 && y >=0 && y<=25){
+                Create();
+            }
     }
 
 }
@@ -195,50 +206,15 @@ void Exit(){
 }
 
 void User_Info(){
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
-    char ch;
-    char name[10];
-    int i=0;
-    int a=1;
-
-    LCD.WriteLine("Type name on the screen");
-    LCD.WriteLine("Press ENTER key to finish");
-
-
-    int count = 0;
-    while(a==1){
-        ch = Keyboard.lastChar();
-        if(ch != 0){ // A character was pressed
-            if(ch == 10){ // Enter key
-                a=0;
-            }
-            // Display the character
-            name[i]=ch;
-            LCD.Write(ch);
-            i++;
-            count++;
-        }
-
-        Sleep(10);
-    }
-    char actualString[count];
-    for (int i = 0; i < count; i++) {
-            actualString[i] = name[i];
-        }
-
-        LCD.Write("Your name is:");
-        LCD.Write(actualString);
-}
 
 }
 
 void Generate(){
-    //Randomixing type of object and x-coordinate of object
-    int randomType = Random.RandInt();
-    int randomCoordinate = Random.RandInt() / 97;
+    Background();
+    //Randomizing type of object and x-coordinate of object
     char File_name[20];
-
+    randomCoordinate = Random.RandInt() / 97;
+    randomType = Random.RandInt();
 
     FEHImage bottle, trash, banana;
     bottle.Open("Bottle.png");
@@ -251,18 +227,21 @@ void Generate(){
         bottle.Draw(randomCoordinate, 0);
         strcpy(File_name, "Bottle.png");
         Fall(randomCoordinate, 0, bottle, File_name, 10, 30);
+        type = 1;
+    }
+        else if (randomType % 3 == 2){
+        //Generate Compost
+        banana.Draw(randomCoordinate, 0);
+        strcpy(File_name, "Banana.png");
+        Fall(randomCoordinate, 0, banana, File_name, 16, 16);
+        type = 2;
     }
     else if (randomType % 3 == 1){
         //Generate trash
         trash.Draw(randomCoordinate, 0);
         strcpy(File_name, "Trash.png");
         Fall(randomCoordinate, 0, trash, File_name, 19, 23);
-    }
-    else if (randomType % 3 == 2){//xRange = 16
-        //Generate Compost
-        banana.Draw(randomCoordinate, 0);
-        strcpy(File_name, "Banana.png");
-        Fall(randomCoordinate, 0, banana, File_name, 16, 16);
+        type = 3;
     }
 }
 
@@ -281,10 +260,13 @@ void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
         while(TimeNow() - time < 0.1){
             if (LCD.Touch(&xInput, &yInput)){
                 if ((xInput >= x && xInput <= x + xRange) && (yInput >= y && yInput <= y + yRange)){
-                    Drag(Icon, File, xRange, yRange);
+                    break;
                 }
             }
             else{}
+        }
+        if ((xInput >= x && xInput <= x + xRange) && (yInput >= y && yInput <= y + yRange)){
+            Drag(Icon, File, xRange, yRange);
         }
         Background();
         y+=1;
@@ -292,8 +274,10 @@ void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
         Bins.Draw(0,213);
     }
     if(y>213){
-        Score(x);
+        Score(x,y);
     }
+
+    
 }
 
 void Drag(FEHImage Icon, char *File, int xRange, int yRange){
@@ -309,24 +293,68 @@ void Drag(FEHImage Icon, char *File, int xRange, int yRange){
             Bins.Draw(0,213);
         }
         if(!LCD.Touch(&x, &y)){
-            Fall(x, y, Icon, File, xRange, yRange);
+            break;
         }
     }
     if(y>213){
-        Score(x);
+        Score(x,y);
+    }
+    if(!LCD.Touch(&x, &y) && y > 213){
+            Fall(x, y, Icon, File, xRange, yRange);
+        }
+}
+
+void Score(int x, int y){
+    if(x >= 0 && x <= 100 && y >= 213){
+        if(type == 1){
+            score += 1;
+            Check_End();
+        }
+        else{
+            incorrect +=1;
+            Check_End();
+        }
+    }
+
+    else if(x >= 106 && x <= 212 && y >= 213){
+        if(type == 2){
+            score += 1;
+            Check_End();
+        }
+        else{
+            incorrect +=1;
+            Check_End();
+        }
+    }
+
+    else if(x >= 219 && x <= 340 && y >= 213){
+        if(type == 3){
+            score += 1;
+            Check_End();
+        }
+        else{
+            incorrect +=1;
+            Check_End();
+        }
+    }
+    else{
+        incorrect += 1;
+        Check_End();
     }
 }
 
-void Score(int x){
-    abort();
-}
-
 void Check_End(){
-
+    if(incorrect == 5){
+        Results();
+    }
+    else if(incorrect <5){
+        Generate();
+    }
 }
 
 void Results(){
-
+    Background();
+    LCD.WriteAt(score, 50,50);
 }
 
 int main() {
