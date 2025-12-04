@@ -37,7 +37,7 @@ void Create (){
 
     //Create Start Page Art
     FEHImage Start_Screen;
-    Start_Screen.Open("Create.png");
+    Start_Screen.Open("Start.png");
     Start_Screen.Draw(0, 0);
     
     //Scan for input
