@@ -4,96 +4,54 @@
 #include "FEHRandom.h"
 #include "FEHKeyboard.h"
 
+int i = 1;  //Index variable
+int xInput, yInput;  //x and y coordinates of the user's input
+int type, randomCoordinate;  //type of object and starting x-coordinate
+int xpos, ypos;  //Position of the falling object
+int score, incorrect;  //Keeps track of the player's score and number of incorrectly sorted items
+int o = 0;  //Index to determine whether the game is over or not
+
+char first, last;  //First and last initial
+
+FEHImage Start_Screen, Background, Bins, GameOver;  //Background images
+FEHImage bottle, trash, banana;  //Icon images
+
 void Create();
-void Background();
-void Start(); //HHH
-void Credits(); //HHH
-void Stats(); //HHH
-void Instructions(); //HHH
-void Exit(); //HHH
+void Start();
+void Credits();
+void Stats();
+void Instructions();
 void User_Info();
 void Generate();
-void Fall(int x, int y, FEHImage icon, char* File, int xRange, int yRange);
-void Drag(FEHImage Icon, char *File, int xRange, int yRange);
-void Score(int x, int y);
+void Fall();
+void Drag();
+void Score();
 void Check_End();
 void Results();
 
-int score = 0, type, incorrect;
-int randomCoordinate;
-int randomType;
-/*
-    SDP Training Minigame #2
-  
-    There is a circle that jumps but stays in the air.
-    Make the circle fall back down.
-*/
-
-void Create (){
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
-    
-    int x = 0, y = 0;
-
-    //Create Start Page Art
-    FEHImage Start_Screen;
-    Start_Screen.Open("Start.png");
-    Start_Screen.Draw(0, 0);
-    
-    //Scan for input
-    while (1){
-        while (!LCD.Touch(&x,&y)) {
-            // Screen not being touched
-        }
-
-        while (LCD.Touch(&x,&y)) {
-            // TODO: Screen is not being touched
-            
-            //Play Now:        TL: (112,187)      BR: (200,204)
-            //Credits:         TL: (59,214)       BR: (102,227)
-            //Stats:           TL: (110,214)      BR: (151, 227)
-            //Instructions:    TL: (159,214)      BR: (202,227)
-            //Exit:            TL: (209,214)      BR: (252,227)
-            if (x <= 200 && x >= 112 && y <= 204 && y >=187){
-                Start();
-            }
-            else if (x <= 102 && x >= 59 && y <= 227 && y >=214){
-                Credits();
-            }
-            else if (x <= 151 && x >= 110 && y <= 227 && y >=214){
-                Stats();
-            }
-            else if (x <= 202 && x >= 159 && y <= 227 && y >=214){
-                Instructions();
-            }
-            else if (x <= 252 && x >= 209 && y <= 227 && y >=214){
-                Exit();
-            }
-            else{
-                //If there is an input, but it's not on an icon nothing will happen
-            }
-	    }
-    }
+//The Create() function is void ad creates the start screen background
+void Create(){
+    Start_Screen.Open("Create.png"); //Opens the Start Screen file
+    Start_Screen.Draw(0,0);  //Draws the Start Screen
+    return; //Returns to the main function
 }
 
-void Background(){
-    LCD.Clear();
-    FEHImage Background, Bins;
-    Background.Open("Background.png");
-    Bins.Open("Bins.png");
-    Background.Draw(0,0);
-    Bins.Draw(0,213);
-}
-
+//The Start() Function creates the gameplay background and begins the game
 void Start(){
-    //Needs updated with background
-    Background();
-    Generate();
-}    
+    LCD.Clear();  //Clearing the screen
+    Background.Open("Background.png");  //Opening background file
+    Bins.Open("Bins.png"); //Opening bins file
+    Background.Draw(0,0); //Drawing background to screen
+    Bins.Draw(0,213); //Drawing bins to screen
+    GameOver.Open("GameOver.png");  //Opening GameOver file
+    bottle.Open("bottle.png");  //Opening bottle icon
+    trash.Open("trash.png");  //Opening trash icon
+    banana.Open("banana.png");  // Opening banana icon
+    return;  //Return to int main()
+}
 
+//The Credits() Function displays the credits screen to the player
 void Credits(){
-      int x, y;
-
     LCD.SetBackgroundColor(BLACK);
     LCD.Clear();
 
@@ -116,277 +74,229 @@ void Credits(){
     LCD.SetFontColor(RED);
     LCD.DrawRectangle(0, 0, 50, 25);
     LCD.FillRectangle(0, 0, 50, 25);
-    while (1){
-            while(!LCD.Touch(&x,&y)) {
-		// Screen not being touched
-	}
 
-        while(LCD.Touch(&x, &y)){
-            if (x>=0 && x<=50 && y >=0 && y<=25){
-                break;
+    Sleep(1.0);
+
+        while (!LCD.Touch(&xInput, &yInput)) {
+		// Screen not being touched
+	    }
+
+        //Detects for input on the exit button
+        while(LCD.Touch(&xInput, &yInput)){
+            if (xInput >= 0 && xInput <= 50 && yInput >= 0 && yInput <= 25){
+                return;
             }
         }
-        if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
-            }
-    }
-
 }
 
-void Stats(){
-      int x, y;
+void Stats(){}
+void Instructions(){}
 
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
-
-    LCD.SetFontColor(RED);
-    LCD.DrawRectangle(0, 0, 50, 25);
-    LCD.FillRectangle(0, 0, 50, 25);
-
-    //Stats
-    LCD.WriteAt("High Scores:", 170, 10);
-
-    while (1){
-            while (!LCD.Touch(&x,&y)) {
-		// Screen not being touched
-	}
-
-        while(LCD.Touch(&x, &y)){
-            if (x>=0 && x<=50 && y >=0 && y<=25){
-                break;
-            }
-        }
-        if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
-            }
-    }
-}
-
-void Instructions(){
-      int x, y;
-
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
-
-    LCD.SetFontColor(RED);
-    LCD.DrawRectangle(0, 0, 50, 25);
-    LCD.FillRectangle(0, 0, 50, 25);
-
-    //Info
-    LCD.SetFontColor(GREENYELLOW);
-    LCD.SetFontScale(2);
-    LCD.WriteAt("Instructions",20,20);
-    //As the materials falls from the shoot, sort them into trash, recycling, and compost
-    LCD.SetFontScale(1);
-    LCD.WriteAt("As the objects falls from", 10,50);
-    LCD.WriteAt("the shoot, sort them", 10,80);
-    LCD.WriteAt("into trash, recycling,", 10,110);
-    LCD.WriteAt("and compost.", 10,140);
-
-
-    while (1){
-            while (!LCD.Touch(&x,&y)) {
-		// Screen not being touched
-	}
-
-        while(LCD.Touch(&x, &y)){
-            if (x>=0 && x<=50 && y >=0 && y<=25){
-                break;
-            }
-        }
-        if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
-            }
-    }
-
-}
-
-void Exit(){
-    abort();
-}
-
+//The User_Info() Function displays the gameplay background and prompts the player to enter their name
 void User_Info(){
+    //Draws the gameplay background
+    Background.Open("Background.png");
+    Background.Draw(0,0);
 
+    return;
 }
 
+//The Generate() Function generates a random x-coordinate and type of item
 void Generate(){
-    Background();
-    //Randomizing type of object and x-coordinate of object
-    char File_name[20];
-    randomCoordinate = Random.RandInt() / 97;
-    randomType = Random.RandInt();
+    //Randomixing type of object and x-coordinate of object
+    type = Random.RandInt();
+    randomCoordinate = Random.RandInt();
+    xpos = randomCoordinate / 97;
+    ypos = 0;
 
-    FEHImage bottle, trash, banana;
-    bottle.Open("Bottle.png");
-    trash.Open("Trash.png");
-    banana.Open("Banana.png");
-    
-
-    if (randomType % 3 == 0){
+    if (type % 3 == 0){
         //Generate recycling
-        bottle.Draw(randomCoordinate, 0);
-        strcpy(File_name, "Bottle.png");
-        Fall(randomCoordinate, 0, bottle, File_name, 10, 30);
-        type = 1;
+        type = 1;  //Type will be used in the Fall() Function
+                    //Type 1 = recycling
     }
-        else if (randomType % 3 == 2){
-        //Generate Compost
-        banana.Draw(randomCoordinate, 0);
-        strcpy(File_name, "Banana.png");
-        Fall(randomCoordinate, 0, banana, File_name, 16, 16);
-        type = 2;
-    }
-    else if (randomType % 3 == 1){
+    else if (type % 3 == 1){
         //Generate trash
-        trash.Draw(randomCoordinate, 0);
-        strcpy(File_name, "Trash.png");
-        Fall(randomCoordinate, 0, trash, File_name, 19, 23);
-        type = 3;
+        type = 2;  //Type 2 = trash
     }
+    else if (type % 3 == 2){
+        //Generate compost
+        type = 3;  //type 3 = compost
+    }
+    return;
 }
 
-void Fall(int x, int y, FEHImage Icon, char *File, int xRange, int yRange){
-    int xInput, yInput;
-    Icon.Open(File);
-
-    FEHImage Bins;
-    Bins.Open("Bins.png");
-
-    float time;
-
-    while(y < 213){
-        time = TimeNow();
-
-        while(TimeNow() - time < 0.1){
-            if (LCD.Touch(&xInput, &yInput)){
-                if ((xInput >= x && xInput <= x + xRange) && (yInput >= y && yInput <= y + yRange)){
-                    break;
-                }
+//The Fall() Function Creates an animation of the object falling
+void Fall(){
+    Sleep(0.1);  //The function sleeps for one second to ensure there is no input form the player
+    while(ypos <= 213){  //The object will only fall until it reaches y = 213
+        while(!LCD.Touch(&xInput, &yInput)){  //If the screen is being touched, then the object will stop falling
+            Background.Draw(0, 0);  //Redrawing background
+            if(type == 1){  //Draws for recycle
+                bottle.Draw(xpos, ypos);
             }
-            else{}
+            else if(type == 2){  //Draws for trash
+                trash.Draw(xpos, ypos);
+            }
+            else if(type == 3){  //Draws for compost
+                banana.Draw(xpos, ypos);
+            }
+            Bins.Draw(0, 213);  //Redraws bins
+            ypos += 1;  //Increasing y position by 1 for next loop
+            Sleep(0.01);  //Sleeps for 0.01 seconds between frames
+            if(ypos > 213){  //If the object goes below y = 213, it will return to main
+                return;
+            }
         }
-        if ((xInput >= x && xInput <= x + xRange) && (yInput >= y && yInput <= y + yRange)){
-            Drag(Icon, File, xRange, yRange);
+        while(LCD.Touch(&xInput, &yInput)){
+            return;
         }
-        Background();
-        y+=1;
-        Icon.Draw(x, y);
-        Bins.Draw(0,213);
     }
-    if(y>213){
-        Score(x,y);
-    }
-
-    
 }
 
-void Drag(FEHImage Icon, char *File, int xRange, int yRange){
-    int x, y;
-    FEHImage Bins;
-    Bins.Open("Bins.png");
-    Icon.Open(File);
+//The Drag() Function allows the object to be dragged by the user and updates it's position globally
+void Drag(){
+    while(ypos <= 213){
+        while(LCD.Touch(&xpos, &ypos)){
+            Background.Draw(0, 0);  //Redrawing background
+            if(type == 1){  //Draws for recycle
+                bottle.Draw(xpos, ypos);
+            }
+            else if(type == 2){  //Draws for trash
+                trash.Draw(xpos, ypos);
+            }
+            else if(type == 3){  //Draws for compost
+                banana.Draw(xpos, ypos);
+            }
+            Bins.Draw(0, 213);  //Redraws Bins
+        }
 
-    while(y < 213){
-        while(LCD.Touch(&x, &y)){
-            Background();
-            Icon.Draw(x,y);
-            Bins.Draw(0,213);
+        if(ypos <= 213){  //If the player lets go, the object will start to fall again
+            Fall();
         }
-        if(!LCD.Touch(&x, &y)){
-            break;
+
+        else if(ypos > 213){  //If the object is in the bin it returns to main
+            return;
         }
     }
-    if(y>213){
-        Score(x,y);
-    }
-    if(!LCD.Touch(&x, &y) && y > 213){
-            Fall(x, y, Icon, File, xRange, yRange);
-        }
 }
 
-void Score(int x, int y){
-    if(x >= 0 && x <= 100 && y >= 213){
-        if(type == 1){
+//The Score() Function keeps track of the player's score
+void Score(){
+    if(xpos >= 0 && xpos <= 100 && ypos >= 213){
+        if(type == 1){  //Adds one for correctly sorting recycling
             score += 1;
-            Check_End();
         }
-        else{
+        else{  //Adds one to the incorrect counter for incorrectly sorting into recycling
             incorrect +=1;
-            Check_End();
         }
     }
 
-    else if(x >= 106 && x <= 212 && y >= 213){
-        if(type == 2){
-            score += 1;
-            Check_End();
-        }
-        else{
-            incorrect +=1;
-            Check_End();
-        }
-    }
-
-    else if(x >= 219 && x <= 340 && y >= 213){
+    else if(xpos >= 106 && xpos <= 212 && ypos >= 213){  //Adds one for correctly sorting compost
         if(type == 3){
             score += 1;
-            Check_End();
         }
-        else{
+        else{  //Adds one to incorrect counter for incorrectly sorting into compost
             incorrect +=1;
-            Check_End();
         }
     }
-    else{
+
+    else if(xpos >= 219 && xpos <= 340 && ypos >= 213){
+        if(type == 2){  //Adds one for correctly sorting trash
+            score += 1;
+        }
+        else{  //Adds one to incorrect counter for incorrectly sorting into trash
+            incorrect +=1;
+        }
+    }
+    else{  //Adds one to incorrect counter for not making it into any bin
         incorrect += 1;
-        Check_End();
     }
+
+    return;
 }
 
+//The Check_End() Function checks whether the game is over or not
 void Check_End(){
-    if(incorrect == 5){
-        Results();
+    if(incorrect == 5){ //If the player has sorted 5 items incorrectly, o = 1 and the while loop in int main() will end
+        o = 1;
+        return;
     }
-    else if(incorrect <5){
-        Generate();
+    else if(incorrect < 5){  //If the player has sorted less than 5 items incorrectly, the game will continue
+        o = 0;
+        return;
     }
 }
 
+//The Results() Function draws a game over screen and displays the player's final score
 void Results(){
-    FEHImage GameOver;
-    GameOver.Open("GameOver.png");
-    GameOver.Draw(0,0);
-
-    LCD.SetFontColor(DARKGREEN);
-    LCD.DrawRectangle(0, 80, 320, 40);
-    LCD.FillRectangle(0, 80, 320, 40);
-
-    LCD.SetFontColor(GREEN);
-    LCD.DrawRectangle(0, 82, 320, 36);
-    LCD.FillRectangle(0, 82, 320, 36);
-
-    LCD.SetFontColor(YELLOWGREEN);
-    LCD.DrawRectangle(0, 85, 320, 30);
-    LCD.FillRectangle(0, 85, 320, 30);
-    
-    LCD.SetFontColor(WHITE);
-    LCD.SetFontScale(1.1);
-    LCD.WriteAt("You scored", 20,88);
-    LCD.WriteAt(score , 175,88);
-    LCD.WriteAt("points", 220,88);
-
+    GameOver.Draw(0,0);  //Draws game over screen
+    LCD.WriteAt("Your Score:", 90, 70);  //Displays the text for "Your Score"
+    LCD.WriteAt(score, 130, 100);  //Displays the player's score
+    LCD.SetFontScale(0.5);  //Shrinks Font Size
+    LCD.Update();
+    Sleep(10);
+    return;
 }
 
-int main() {
-    // Clear background
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
+int main(){
+    //Detects where user input it, and which button it is
+    while(1){
+        while (i == 1){
+            
+            Create();  //Creates the start page
+            while(!LCD.Touch(&xInput, &yInput)){
+                //No touch detected
+            }
+            while(LCD.Touch(&xInput,&yInput)){
+                    // TODO: Screen is not being touched
+                    
+                    //Play Now:        TL: (112,187)      BR: (200,204)
+                    //Credits:         TL: (59,214)       BR: (102,227)
+                    //Stats:           TL: (110,214)      BR: (151, 227)
+                    //Instructions:    TL: (159,214)      BR: (202,227)
+                    //Exit:            TL: (209,214)      BR: (252,227)
+                    if (xInput <= 102 && xInput >= 59 && yInput <= 227 && yInput >=214){
+                        Credits();  //Takes player to credits page
+                    }
+                    else if (xInput <= 151 && xInput >= 110 && yInput <= 227 && yInput >=214){
+                        Stats();  //Takes player to stats page
+                    }
+                    else if (xInput <= 202 && xInput >= 159 && yInput <= 227 && yInput >=214){
+                        Instructions();  //Takes player to instructions page
+                    }
+                    else if (xInput <= 252 && xInput >= 209 && yInput <= 227 && yInput >=214){
+                        abort(); //Exits the program
+                    }
+                    else if(xInput <= 200 && xInput >= 112 && yInput <= 204 && yInput >=187){
+                        i = 0; //Breaks out of the menu loop and ensures that it will not repeat
+                        break;
+                    }
+            }
+        }
 
-    Create();
+        User_Info();
+        Start();
 
-    while (1) {
-        LCD.Update();
-        // Never end
+        while(o == 0){
+            Generate();
+            Fall();
+
+            i = 1;
+
+            while(i == 1){
+                if(ypos >= 213){
+                    Score();
+                    i = 0;
+                }
+                else if(ypos < 213){
+                    Drag();
+                }
+            }
+
+            Check_End();
+        }
+
+        Results();
+        i = 0;
     }
-    return 0;
 }
