@@ -100,7 +100,44 @@ void Stats(){
         }
 }
 
-void Instructions(){}
+void Instructions(){
+      int x, y;
+
+    LCD.SetBackgroundColor(BLACK);
+    LCD.Clear();
+
+    LCD.SetFontColor(RED);
+    LCD.DrawRectangle(0, 0, 50, 25);
+    LCD.FillRectangle(0, 0, 50, 25);
+
+    //Info
+    LCD.SetFontColor(GREENYELLOW);
+    LCD.SetFontScale(2);
+    LCD.WriteAt("Instructions",20,20);
+    //As the materials falls from the shoot, sort them into trash, recycling, and compost
+    LCD.SetFontScale(1);
+    LCD.WriteAt("As the objects falls from", 10,50);
+    LCD.WriteAt("the shoot, sort them", 10,80);
+    LCD.WriteAt("into trash, recycling,", 10,110);
+    LCD.WriteAt("and compost.", 10,140);
+
+
+    while (1){
+            while (!LCD.Touch(&x,&y)) {
+		// Screen not being touched
+	}
+
+        while(LCD.Touch(&x, &y)){
+            if (x>=0 && x<=50 && y >=0 && y<=25){
+                break;
+            }
+        }
+        if (x>=0 && x<=50 && y >=0 && y<=25){
+                Create();
+            }
+    }
+
+}
 
 //The Generate() Function generates a random x-coordinate and type of item
 void Generate(){
