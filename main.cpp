@@ -10,10 +10,12 @@ int type, randomCoordinate;  //type of object and starting x-coordinate
 int xpos, ypos;  //Position of the falling object
 int score, incorrect;  //Keeps track of the player's score and number of incorrectly sorted items
 int o = 0;  //Index to determine whether the game is over or not
+int highScore = 0;  //Stores high score for session
 
 char first, last;  //First and last initial
 
 FEHImage Start_Screen, Background, Bins, GameOver;  //Background images
+FEHImage Stat, Credit;  //Other screen images
 FEHImage bottle, trash, banana;  //Icon images
 
 void Create();
@@ -29,10 +31,13 @@ void Score();
 void Check_End();
 void Results();
 
-//The Create() function is void ad creates the start screen background
+//The Create() function is void and creates the start screen background
 void Create(){
     Start_Screen.Open("Create.png"); //Opens the Start Screen file
     Start_Screen.Draw(0,0);  //Draws the Start Screen
+    Stat.Open("Stats.png");  //Opens the stats screen file
+    Credit.Open("Credits.png");
+
     return; //Returns to the main function
 }
 
@@ -52,30 +57,11 @@ void Start(){
 
 //The Credits() Function displays the credits screen to the player
 void Credits(){
-    LCD.SetBackgroundColor(BLACK);
-    LCD.Clear();
+    LCD.Clear();  //Clears the screen
 
-    LCD.SetFontColor(GREENYELLOW);
- 
-    LCD.SetFontScale(2);
-    LCD.WriteAt("Credits", 110,20);
-    
-    LCD.SetFontScale(1);
-    LCD.WriteAt("Coding", 10,35);
-    LCD.SetFontScale(0.5);
-    LCD.WriteAt("Adam Wiest &", 10,50);
-    LCD.WriteAt("David Fagbolagun", 10,60);
- 
-    LCD.SetFontScale(1);
-    LCD.WriteAt("References", 10,80);
-    LCD.SetFontScale(0.5);
-    LCD.WriteAt("Fruit Ninja", 10,95);
+    Credit.Draw(0, 0);  //Draws the credits screen
 
-    LCD.SetFontColor(RED);
-    LCD.DrawRectangle(0, 0, 50, 25);
-    LCD.FillRectangle(0, 0, 50, 25);
-
-    Sleep(1.0);
+    Sleep(1.0);  //Sleeps before allowing any input
 
         while (!LCD.Touch(&xInput, &yInput)) {
 		// Screen not being touched
@@ -89,7 +75,29 @@ void Credits(){
         }
 }
 
-void Stats(){}
+//The Stats() Function displays the stats screen to the player
+void Stats(){
+    LCD.Clear();  //Clears the screen
+    Stat.Draw(0,0);  //Draws the stats background
+
+    LCD.SetFontScale(1.0);  //Sets font size for high score
+    LCD.WriteAt(highScore, 150, 150);  //Writes high score to screen
+
+        Sleep(1.0);  //Sleeps before allowing any input
+
+        while (!LCD.Touch(&xInput, &yInput)) {
+		// Screen not being touched
+	    }
+
+        //Detects for input on the exit button
+        while(LCD.Touch(&xInput, &yInput)){
+            if (xInput >= 0 && xInput <= 50 && yInput >= 0 && yInput <= 25){
+                return;
+            }
+        }
+}
+
+
 void Instructions(){}
 
 //The User_Info() Function displays the gameplay background and prompts the player to enter their name
@@ -106,7 +114,7 @@ void Generate(){
     //Randomixing type of object and x-coordinate of object
     type = Random.RandInt();
     randomCoordinate = Random.RandInt();
-    xpos = randomCoordinate / 97;
+    xpos = randomCoordinate / 100;
     ypos = 0;
 
     if (type % 3 == 0){
@@ -229,15 +237,21 @@ void Check_End(){
 
 //The Results() Function draws a game over screen and displays the player's final score
 void Results(){
+    if(score > highScore){  //Determines whether the score is a high score
+        highScore = score;  //Stores new high score
+    }
+    
     GameOver.Draw(0,0);  //Draws game over screen
+    LCD.SetFontScale(1.0);  //Sets larger font fot "Your Score"
+    LCD.SetFontColor(WHITE);  //Sets font color to white
     LCD.WriteAt("Your Score:", 90, 70);  //Displays the text for "Your Score"
     LCD.WriteAt(score, 130, 100);  //Displays the player's score
     LCD.SetFontScale(0.5);  //Shrinks Font Size
     LCD.Update();
-    Sleep(10);
     return;
 }
 
+//The main() Function is a structure for the gameplay
 int main(){
     //Detects where user input it, and which button it is
     while(1){
@@ -297,6 +311,7 @@ int main(){
         }
 
         Results();
-        i = 0;
+        Sleep(5.0);
+        i = 1;
     }
 }
