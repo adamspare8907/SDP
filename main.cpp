@@ -353,8 +353,28 @@ void Check_End(){
 }
 
 void Results(){
-    Background();
-    LCD.WriteAt(score, 50,50);
+    FEHImage GameOver;
+    GameOver.Open("GameOver.png");
+    GameOver.Draw(0,0);
+
+    LCD.SetFontColor(DARKGREEN);
+    LCD.DrawRectangle(0, 80, 320, 40);
+    LCD.FillRectangle(0, 80, 320, 40);
+
+    LCD.SetFontColor(GREEN);
+    LCD.DrawRectangle(0, 82, 320, 36);
+    LCD.FillRectangle(0, 82, 320, 36);
+
+    LCD.SetFontColor(YELLOWGREEN);
+    LCD.DrawRectangle(0, 85, 320, 30);
+    LCD.FillRectangle(0, 85, 320, 30);
+    
+    LCD.SetFontColor(WHITE);
+    LCD.SetFontScale(1.1);
+    LCD.WriteAt("You scored", 20,88);
+    LCD.WriteAt(score , 175,88);
+    LCD.WriteAt("points", 220,88);
+
 }
 
 int main() {
