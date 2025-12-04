@@ -23,7 +23,6 @@ void Start();
 void Credits();
 void Stats();
 void Instructions();
-void User_Info();
 void Generate();
 void Fall();
 void Drag();
@@ -52,6 +51,10 @@ void Start(){
     bottle.Open("bottle.png");  //Opening bottle icon
     trash.Open("trash.png");  //Opening trash icon
     banana.Open("banana.png");  // Opening banana icon
+
+    o = 0;  //Resets o index, allowing the game to replay
+    incorrect = 0;  //Resets number of incorrect
+    score = 0;  //Resets score
     return;  //Return to int main()
 }
 
@@ -97,17 +100,7 @@ void Stats(){
         }
 }
 
-
 void Instructions(){}
-
-//The User_Info() Function displays the gameplay background and prompts the player to enter their name
-void User_Info(){
-    //Draws the gameplay background
-    Background.Open("Background.png");
-    Background.Draw(0,0);
-
-    return;
-}
 
 //The Generate() Function generates a random x-coordinate and type of item
 void Generate(){
@@ -135,7 +128,7 @@ void Generate(){
 
 //The Fall() Function Creates an animation of the object falling
 void Fall(){
-    Sleep(0.1);  //The function sleeps for one second to ensure there is no input form the player
+    Sleep(0.05);  //The function sleeps for one second to ensure there is no input form the player
     while(ypos <= 213){  //The object will only fall until it reaches y = 213
         while(!LCD.Touch(&xInput, &yInput)){  //If the screen is being touched, then the object will stop falling
             Background.Draw(0, 0);  //Redrawing background
@@ -166,16 +159,16 @@ void Drag(){
     while(ypos <= 213){
         while(LCD.Touch(&xpos, &ypos)){
             Background.Draw(0, 0);  //Redrawing background
-            if(type == 1){  //Draws for recycle
-                bottle.Draw(xpos, ypos);
-            }
-            else if(type == 2){  //Draws for trash
-                trash.Draw(xpos, ypos);
-            }
-            else if(type == 3){  //Draws for compost
-                banana.Draw(xpos, ypos);
-            }
-            Bins.Draw(0, 213);  //Redraws Bins
+                if(type == 1){  //Draws for recycle
+                    bottle.Draw(xpos, ypos);
+                }
+                else if(type == 2){  //Draws for trash
+                    trash.Draw(xpos, ypos);
+                }
+                else if(type == 3){  //Draws for compost
+                    banana.Draw(xpos, ypos);
+                }
+                Bins.Draw(0, 213);  //Redraws Bins
         }
 
         if(ypos <= 213){  //If the player lets go, the object will start to fall again
@@ -255,20 +248,17 @@ void Results(){
 int main(){
     //Detects where user input it, and which button it is
     while(1){
+        i = 1;  //Allowing the next loop too start every time
+
         while (i == 1){
             
             Create();  //Creates the start page
             while(!LCD.Touch(&xInput, &yInput)){
                 //No touch detected
             }
+            
+            /*This loop handles all the menu navigation and is crutial in game navigation*/
             while(LCD.Touch(&xInput,&yInput)){
-                    // TODO: Screen is not being touched
-                    
-                    //Play Now:        TL: (112,187)      BR: (200,204)
-                    //Credits:         TL: (59,214)       BR: (102,227)
-                    //Stats:           TL: (110,214)      BR: (151, 227)
-                    //Instructions:    TL: (159,214)      BR: (202,227)
-                    //Exit:            TL: (209,214)      BR: (252,227)
                     if (xInput <= 102 && xInput >= 59 && yInput <= 227 && yInput >=214){
                         Credits();  //Takes player to credits page
                     }
@@ -287,31 +277,27 @@ int main(){
                     }
             }
         }
+        
+        Start();  //If the user starts the game, the Start() Function is called
 
-        User_Info();
-        Start();
-
-        while(o == 0){
-            Generate();
-            Fall();
-
-            i = 1;
-
-            while(i == 1){
-                if(ypos >= 213){
-                    Score();
-                    i = 0;
+        while(o == 0){  //If game is not over, it will continue to generate items
+            Generate();  //Generates an item
+            Fall();  //Makes item fall
+        
+            while(1){  //Determines whether item is in bin
+                if(ypos >= 213){  //If item is in bin, the Score() Function is calles
+                    Score();  //Adjusts score
+                    break;  //Breaks out of while loop to call Check_End()
                 }
-                else if(ypos < 213){
-                    Drag();
+                else if(ypos < 213){  //If item is not in bin, the item continues to fall or be dragged
+                    Drag();  //Allows player to manipulate item
                 }
             }
 
-            Check_End();
+            Check_End();  //Checks whether the game is over
         }
-
-        Results();
-        Sleep(5.0);
-        i = 1;
+        
+        Results();  //If game is over, Results() is called and the game ends
+        Sleep(5.0);  //Displays the results screen for 5 seconds before going to the Create() Function to allow player to play again
     }
 }
