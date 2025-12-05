@@ -103,39 +103,39 @@ void Stats(){
 void Instructions(){
       int x, y;
 
-    LCD.SetBackgroundColor(BLACK);
     LCD.Clear();
+    Instruction.Open("Instructions.png");
+    Instruction.Draw(0,0);
 
-    LCD.SetFontColor(RED);
-    LCD.DrawRectangle(0, 0, 50, 25);
-    LCD.FillRectangle(0, 0, 50, 25);
+    //LCD.SetFontColor(WHITE);
+    //LCD.DrawRectangle(0, 0, 50, 25);
+    //LCD.FillRectangle(0, 0, 50, 25);
 
     //Info
-    LCD.SetFontColor(GREENYELLOW);
+    LCD.SetFontColor(GREEN);
     LCD.SetFontScale(2);
-    LCD.WriteAt("Instructions",20,20);
+    LCD.WriteAt("Instructions",20,30);
     //As the materials falls from the shoot, sort them into trash, recycling, and compost
+    LCD.SetFontColor(WHITE);
     LCD.SetFontScale(1);
-    LCD.WriteAt("As the objects falls from", 10,50);
-    LCD.WriteAt("the shoot, sort them", 10,80);
-    LCD.WriteAt("into trash, recycling,", 10,110);
-    LCD.WriteAt("and compost.", 10,140);
+    LCD.WriteAt("As the objects falls from", 10,80);
+    LCD.WriteAt("the shoot, sort them", 10,110);
+    LCD.WriteAt("into trash, recycling,", 10,140);
+    LCD.WriteAt("and compost.", 10,170);
 
 
-    while (1){
-            while (!LCD.Touch(&x,&y)) {
+        Sleep(1.0);  //Sleeps before allowing any input
+
+        while (!LCD.Touch(&xInput, &yInput)) {
 		// Screen not being touched
-	}
+	    }
 
-        while(LCD.Touch(&x, &y)){
-            if (x>=0 && x<=50 && y >=0 && y<=25){
-                break;
+        //Detects for input on the exit button
+        while(LCD.Touch(&xInput, &yInput)){
+            if (xInput >= 0 && xInput <= 50 && yInput >= 0 && yInput <= 25){
+                return;
             }
         }
-        if (x>=0 && x<=50 && y >=0 && y<=25){
-                Create();
-            }
-    }
 
 }
 
