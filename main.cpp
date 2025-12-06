@@ -15,7 +15,7 @@ int highScore = 0;  //Stores high score for session
 char first, last;  //First and last initial
 
 FEHImage Start_Screen, Background, Bins, GameOver;  //Background images
-FEHImage Stat, Credit;  //Other screen images
+FEHImage Stat, Credit, Instruction;  //Other screen images
 FEHImage bottle, trash, banana;  //Icon images
 
 void Create();
@@ -44,6 +44,7 @@ void Create(){
 void Start(){
     LCD.Clear();  //Clearing the screen
     Background.Open("Background.png");  //Opening background file
+    Instruction.Open("Instructions.png");
     Bins.Open("Bins.png"); //Opening bins file
     Background.Draw(0,0); //Drawing background to screen
     Bins.Draw(0,213); //Drawing bins to screen
@@ -100,10 +101,9 @@ void Stats(){
         }
 }
 
+//The Instructions() Function displays the instructions screen to the player
 void Instructions(){
-      int x, y;
-
-    LCD.Clear();
+     LCD.Clear();
     Instruction.Open("Instructions.png");
     Instruction.Draw(0,0);
 
@@ -112,14 +112,14 @@ void Instructions(){
     //LCD.FillRectangle(0, 0, 50, 25);
 
     //Info
-    LCD.SetFontColor(GREEN);
+    LCD.SetFontColor(WHITE);
     LCD.SetFontScale(2);
     LCD.WriteAt("Instructions",20,30);
     //As the materials falls from the shoot, sort them into trash, recycling, and compost
     LCD.SetFontColor(WHITE);
     LCD.SetFontScale(1);
     LCD.WriteAt("As the objects falls from", 10,80);
-    LCD.WriteAt("the shoot, sort them", 10,110);
+    LCD.WriteAt("the sky, sort them", 10,110);
     LCD.WriteAt("into trash, recycling,", 10,140);
     LCD.WriteAt("and compost.", 10,170);
 
