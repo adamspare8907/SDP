@@ -36,6 +36,7 @@ void Create(){
     Start_Screen.Draw(0,0);  //Draws the Start Screen
     Stat.Open("Stats.png");  //Opens the stats screen file
     Credit.Open("Credits.png");
+    Instruction.Open("Instructions.png");
 
     return; //Returns to the main function
 }
@@ -44,7 +45,6 @@ void Create(){
 void Start(){
     LCD.Clear();  //Clearing the screen
     Background.Open("Background.png");  //Opening background file
-    Instruction.Open("Instructions.png");
     Bins.Open("Bins.png"); //Opening bins file
     Background.Draw(0,0); //Drawing background to screen
     Bins.Draw(0,213); //Drawing bins to screen
