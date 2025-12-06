@@ -25,7 +25,7 @@ void Stats();
 void Instructions();
 void Generate();
 void Fall();
-void Drag();
+void Touch();
 void Score();
 void Check_End();
 void Results();
@@ -191,8 +191,8 @@ void Fall(){
     }
 }
 
-//The Drag() Function allows the object to be dragged by the user and updates it's position globally
-void Drag(){
+//The Touch() Function allows the object to be moved by the user and updates it's position globally
+void Touch(){
     while(ypos <= 213){
         while(LCD.Touch(&xpos, &ypos)){
             Background.Draw(0, 0);  //Redrawing background
@@ -326,8 +326,8 @@ int main(){
                     Score();  //Adjusts score
                     break;  //Breaks out of while loop to call Check_End()
                 }
-                else if(ypos < 213){  //If item is not in bin, the item continues to fall or be dragged
-                    Drag();  //Allows player to manipulate item
+                else if(ypos < 213){  //If item is not in bin, the item continues to fall or be moved
+                    Touch();  //Allows player to manipulate item
                 }
             }
 
