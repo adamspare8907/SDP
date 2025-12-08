@@ -103,7 +103,9 @@ void Stats(){
 
 //The Instructions() Function displays the instructions screen to the player
 void Instructions(){
-     LCD.Clear();
+      int x, y;
+
+    LCD.Clear();
     Instruction.Open("Instructions.png");
     Instruction.Draw(0,0);
 
@@ -112,16 +114,17 @@ void Instructions(){
     //LCD.FillRectangle(0, 0, 50, 25);
 
     //Info
-    LCD.SetFontColor(WHITE);
+    LCD.SetFontColor(GREEN);
     LCD.SetFontScale(2);
     LCD.WriteAt("Instructions",20,30);
     //As the materials falls from the shoot, sort them into trash, recycling, and compost
     LCD.SetFontColor(WHITE);
     LCD.SetFontScale(1);
-    LCD.WriteAt("As the objects falls from", 10,80);
-    LCD.WriteAt("the sky, sort them", 10,110);
-    LCD.WriteAt("into trash, recycling,", 10,140);
-    LCD.WriteAt("and compost.", 10,170);
+    LCD.WriteAt("As the objects falls from", 5,80);
+    LCD.WriteAt("the shoot, sort them into", 5,110);
+    LCD.WriteAt("trash, recycling, and", 5,140);
+    LCD.WriteAt("compost. After 5 incorrect", 5,170);
+    LCD.WriteAt("sorts, you loose.", 5,200);
 
 
         Sleep(1.0);  //Sleeps before allowing any input
@@ -136,7 +139,6 @@ void Instructions(){
                 return;
             }
         }
-
 }
 
 //The Generate() Function generates a random x-coordinate and type of item
@@ -165,6 +167,7 @@ void Generate(){
 
 //The Fall() Function Creates an animation of the object falling
 void Fall(){
+    int i=(score/10)+1;
     Sleep(0.05);  //The function sleeps for one second to ensure there is no input form the player
     while(ypos <= 213){  //The object will only fall until it reaches y = 213
         while(!LCD.Touch(&xInput, &yInput)){  //If the screen is being touched, then the object will stop falling
@@ -179,7 +182,7 @@ void Fall(){
                 banana.Draw(xpos, ypos);
             }
             Bins.Draw(0, 213);  //Redraws bins
-            ypos += 1;  //Increasing y position by 1 for next loop
+            ypos += i;  //Increasing y position by 1 for next loop and will increase depending on the score
             Sleep(0.01);  //Sleeps for 0.01 seconds between frames
             if(ypos > 213){  //If the object goes below y = 213, it will return to main
                 return;
